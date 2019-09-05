@@ -1,4 +1,4 @@
-## REQUIREMENTS 
+## Requirements 
 
 vs2015 
 
@@ -9,7 +9,7 @@ CUDA (adaptive to your personal computer's enviroment)
 cuDNN (version related to CUDA) 
 
 
-## reference
+## References
 
 [1] [使用 CuDNN 进行卷积运算](https://blog.csdn.net/panda1234lee/article/details/83154504?tdsourcetag=s_pctim_aiomsg) 
 
