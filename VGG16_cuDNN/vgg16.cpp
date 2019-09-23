@@ -91,7 +91,7 @@ void conv_foward_layer(
 			&convolution_algorithm));
 
 	// 计算 cuDNN 它的操作需要多少内存
-	size_t workspace_bytes{ 0 };
+	size_t workspace_bytes = 0;
 	checkCUDNN(cudnnGetConvolutionForwardWorkspaceSize(handle,
 		input_descriptor,
 		kernel_descriptor,
@@ -99,7 +99,7 @@ void conv_foward_layer(
 		output_descriptor,
 		convolution_algorithm,
 		&workspace_bytes));
-	if (workspace_bytes == 0) workspace_bytes = 1024 * 1048576.0;
+	if (workspace_bytes == 0) workspace_bytes = 8 * (size_t)1048576;
 	std::cerr << "Workspace size: " << (workspace_bytes / 1048576.0) << "MB"
 		<< std::endl;
 	assert(workspace_bytes > 0);
@@ -200,6 +200,7 @@ void conv_foward_layer(
 	/*float* y_output = new float[y_bytes];
 	cudaMemcpy(y_output, y, y_bytes, cudaMemcpyDeviceToHost);
 	save_image("./cv.png", y_output, y_height, y_width);*/
+
 	cudaFree(y_workspace);
 	cudnnDestroyTensorDescriptor(input_descriptor);
 	cudnnDestroyTensorDescriptor(output_descriptor);
@@ -417,6 +418,21 @@ void vgg16_forward(
 		d_kernel = nullptr;
 		cudaFree(d_bias);
 		d_bias = nullptr;
+
+
+		//int _n, _c, _h, _w, _tmp;
+		//cudnnDataType_t _t;
+		//checkCUDNN(cudnnGetTensor4dDescriptor(input_tensor, &_t, &_n, &_c, &_h, &_w, &_tmp, &_tmp, &_tmp, &_tmp));
+		//std::cout << "batch: " << _n               /* number of inputs (batch size) */
+		//	<< " channel: " << _c                   /* number of input feature maps  */
+		//	<< " height: " << _h                   /* height of input section */
+		//	<< " width: " << _w                   /* width of input section */
+		//	<< " \n" << std::endl;
+		std::cout << "batch: " << sizeof(input_tensor) * 1048576 / (in_height * in_width * conv_kernel_sizes[layer][2])
+			<< " channel: " << sizeof(input_tensor) * 1048576 / (in_height * in_width * batch_size)
+			<< " height: " << sizeof(input_tensor) * 1048576 / (conv_kernel_sizes[layer][2] * in_width * batch_size)
+			<< " width: " << sizeof(input_tensor) * 1048576 / (conv_kernel_sizes[layer][2] * in_height * batch_size)
+			<< "\n" << std::endl;
 	}
 
 	// calculate fully connected foward layers

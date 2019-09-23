@@ -9,6 +9,9 @@
 
 using namespace std;
 
+//export CUDNN_LOGINFO_DBG = 1;
+//export CUDNN_LOGDEST_DBG = stdout;
+
 int main(/*int argc, const char* argv[]*/) 
 {
 	//load parameters
